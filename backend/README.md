@@ -9,5 +9,5 @@
 - Run this command: python app.py
 ### Test API
 - The server maybe take a moment to start (around 1-1.5 minutes). You should wait this process until you see the result as the below picture:
-![alt text](https://drive.google.com/file/d/1XbiGxWxQBv-P_40KNn1ja9Au629W29S2/view?usp=sharing)
+![be](https://github.com/nguyen-huu-luong/DEG4/assets/80337518/d9b64d67-de8c-4944-b11e-618ac9638339)
 - After that, you can test this GET request. This process also takes a moment (about 1 minute for the first time): http://localhost:8000/test 
