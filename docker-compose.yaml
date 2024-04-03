@@ -1,0 +1,10 @@
+version: "1.0"
+services:
+  pyflink:
+    build: ./backend
+    container_name: backend
+    volumes:
+      - ./backend:/backend
+    ports:
+      - 8000:8000
+  

@@ -1,0 +1,5 @@
+apache-flink
+redshift_connector
+numpy
+pandas
+Flask
