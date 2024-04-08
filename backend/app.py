@@ -1,4 +1,3 @@
-# from pyflink.table import EnvironmentSettings, TableEnvironment
 from pyflink.table import EnvironmentSettings, TableEnvironment
 from flask import Flask
 

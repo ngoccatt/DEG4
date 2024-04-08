@@ -1,0 +1,7 @@
+version: "1.0"
+services:
+  etl:
+    build: ./src
+    container_name: etl
+    volumes:
+      - ./:/ETL
