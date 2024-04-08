@@ -1,7 +1,8 @@
 from pyflink.table import DataTypes
 
 class Flink:
-    def __init__(self): pass
+    def __init__(self): 
+        self.update = True
     
     def createTable(self, table_env, cnt):
         try: 
@@ -20,6 +21,7 @@ class Flink:
             self.orders = table_env.from_pandas(pdf_orders,
                 DataTypes.ROW([DataTypes.FIELD("id", DataTypes.STRING()),
                                 DataTypes.FIELD("customerId", DataTypes.INT()),
+                                DataTypes.FIELD("cancelled", DataTypes.BOOLEAN()),
                                 DataTypes.FIELD("invoicedate", DataTypes.DATE()),
                                 DataTypes.FIELD("invoicetime", DataTypes.TIME())]))
             
@@ -40,6 +42,8 @@ class Flink:
             print(e)
             
     def getAnalitics(self, table_env, cnt):
+        if not self.update:
+            return 
         try: 
             self.pdf_revenue = cnt.fetchData(
                                         """
@@ -125,6 +129,7 @@ class Flink:
                                         )
             
             print("Fetched all table successfully")
+            self.update = False
 
         except Exception as e:
             print(e)
