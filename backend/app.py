@@ -7,7 +7,7 @@ from flink import flink_tables
 env_setting = EnvironmentSettings.in_batch_mode()
 table_env = TableEnvironment.create(env_setting)
 
-flink_tables.createTable(table_env, cnt)
+# flink_tables.createTable(table_env, cnt)
 flink_tables.getAnalitics(table_env, cnt)
 
 app = Flask(__name__)
@@ -23,9 +23,26 @@ def formatResult(status, records):
     data = df.values.tolist()
     return {"status": status, "data": data}
 
+@app.route("/testInsert")
+def myInsert():
+    name = ["name", "class", "school"]
+    value = ["x", 8, "x"]
+    cnt.insertData("temp", name, value)
+    
+    # sql = f'INSERT INTO temp(name,class,school) VALUES(%s,%s,%s)'
+    # cnt.cursor.execute(sql, value)
+    return {"status": True}
+
+@app.route("/updateAnalytics")
+def update_analytics():
+    res = {"status": True}
+    flink_tables.getAnalitics(table_env, cnt)
+    return res
+
 # doanh thu theo tung quoc gia
 @app.route("/revenue/countries")
 def revenue_report():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_revenue
     df = df.groupby("country", as_index=False)[["revenue"]].sum()
@@ -37,6 +54,7 @@ def revenue_report():
 #doanh thu theo tung thang
 @app.route("/revenue/monthly")
 def revenue_monthly():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_revenue
     df["time"] = df["year"].astype("str") + '-' + df["month"].astype("str")
@@ -48,6 +66,7 @@ def revenue_monthly():
 #doanh thu theo tung nam
 @app.route("/revenue/yearly")
 def revenue_yearly():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_revenue
     df = df.groupby("year", as_index=False, sort=False)[["revenue"]].sum()
@@ -58,6 +77,7 @@ def revenue_yearly():
 #so don hang theo tung quoc gia
 @app.route("/orders/countries")
 def orders_coun():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_avg_revenue
     df = df.groupby("country", as_index=False, sort=False)[["num_orders"]].sum()
@@ -69,6 +89,7 @@ def orders_coun():
 #trung binh gia tri don hang theo tung quoc gia
 @app.route("/orders/avg")
 def orders_avg():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_avg_revenue
     df = df[
@@ -84,6 +105,7 @@ def orders_avg():
 #so don hang duoc dat theo khung gio
 @app.route("/orders/timeslot")
 def orders_timeslot():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_order_timeslot
     print(df)
@@ -93,6 +115,7 @@ def orders_timeslot():
 #tong so don hang duoc dat theo khung gio (xuyen quoc gia)
 @app.route("/orders/timeslot_sum")
 def orders_timeslot_sum():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_order_timeslot
     df = df.iloc[:, 1:]
@@ -104,6 +127,7 @@ def orders_timeslot_sum():
 #tong so luong don hang bi huy tren tong don hang o tung quoc gia
 @app.route("/orders/cancelled")
 def orders_cancelled():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_cancel_rate
     print(df)
@@ -113,6 +137,7 @@ def orders_cancelled():
 #tong so luong don hang bi huy tren tong don hang
 @app.route("/orders/cancelled_sum")
 def orders_cancelled_sum():
+    update_analytics()
     result = "Empty"
     df = flink_tables.pdf_cancel_rate
     df = df.iloc[:, 1:].agg(["sum"], axis = 0)
