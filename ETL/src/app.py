@@ -72,6 +72,7 @@ orders_pandas = orders.to_pandas()
 orders_pandas.drop(orders_pandas.tail(1).index,inplace=True)
 belongs_pandas = belongs.to_pandas()
 
+#this step might not be necessary.
 
 products_pandas.to_csv("/ETL/sink_data/products.csv", index=False)
 customers_pandas.to_csv("/ETL/sink_data/customers.csv", index=False)
