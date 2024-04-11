@@ -1,5 +1,6 @@
 from pyflink.table import EnvironmentSettings, TableEnvironment
 from flask import Flask
+from flask_cors import CORS
 
 from connector import cnt
 from flink import flink_tables
@@ -11,6 +12,9 @@ table_env = TableEnvironment.create(env_setting)
 flink_tables.getAnalitics(table_env, cnt)
 
 app = Flask(__name__)
+
+CORS(app, origins='http://localhost:3000')
+
 
 @app.route("/test")
 def test():
