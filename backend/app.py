@@ -1,8 +1,11 @@
 from pyflink.table import EnvironmentSettings, TableEnvironment
-from flask import Flask
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 from connector import cnt
 from flink import flink_tables
+from json import dumps
+import atexit
 
 env_setting = EnvironmentSettings.in_batch_mode()
 table_env = TableEnvironment.create(env_setting)
@@ -12,15 +15,10 @@ flink_tables.getAnalitics(table_env, cnt)
 
 app = Flask(__name__)
 
-@app.route("/test")
-def test():
-    records = flink_tables.belong.fetch(5)
-    result =  formatResult(True, records)
-    return result
+CORS(app)
 
 def formatResult(status, records):
-    df = records.to_pandas()
-    data = df.values.tolist()
+    data = records.values.tolist()
     return {"status": status, "data": data}
 
 @app.route("/testInsert")
@@ -144,6 +142,71 @@ def orders_cancelled_sum():
     print(df)
     result = {"status": True, "header": df.columns.tolist(), "data": df.values.tolist()}
     return result
+
+@app.route("/api/v1/total_product")
+def getTotalProduct():
+    try: 
+        total_product = flink_tables.getToTalProduct(cnt)
+        result = {"status": True, "data": total_product}
+        return jsonify(result)
+        # return formatResult(True, total_product)
+    except Exception as e:
+        print(e)
+        return {"status": False}
+    
+@app.route("/api/v1/paginate_product")
+def paginateProduct():
+    try:
+        offset = request.args.get("offset")
+        limit_number = request.args.get("limit")
+        current_product = flink_tables.paginateProduct(offset, limit_number, cnt)
+        result = {"status": True, "data": current_product}
+        return jsonify(result)
+    except Exception as e:
+        print(e)
+        return {"status": False}
+    
+
+@app.route("/api/v1/product_info")
+def getAllProduct():
+    try:
+        all_product = flink_tables.getAllProduct(cnt)
+        result = {"status": True, "products": all_product}
+        return jsonify(result)
+    except Exception as e:
+        print(e)
+        return {"status": False}  
+    
+@app.route("/api/v1/bestseller")
+def getBestSeller():
+    try:
+        all_product = flink_tables.getBestSellerProduct(cnt)
+        result = {"status": True, "bestseller": all_product}
+        return jsonify(result)
+    except Exception as e:
+        print(e)
+        return {"status": False} 
+
+@app.route("/api/v1/order", methods=['POST'])
+def makeOrder():
+    try:
+        request_data = request.get_json()
+        orderId = request_data["orderId"]
+        productId = request_data["productId"]
+        customerId = request_data["customerId"]
+        all_product = flink_tables.createOrder(orderId, customerId, productId, cnt)
+        return jsonify({"status": True, "bestseller": all_product})
+    except Exception as e:
+        print(e)
+        return {"status": False}    
+    
+def disconnectDB():
+    try:
+        cnt.closeConnect()
+    except Exception as e:
+        print(e)
+
+atexit.register(disconnectDB)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8000 ,debug=True)

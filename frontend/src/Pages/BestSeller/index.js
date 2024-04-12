@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
-import axios from "axios"
-import ResponsivePagination from 'react-responsive-pagination';
+import { useState, useEffect } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-responsive-pagination/themes/classic.css';
+import axios from "axios"
 
 const Items = ({ current_products, handleOrder }) => {
     const images = ["https://media-cdn.tripadvisor.com/media/photo-s/1a/8e/55/ae/beef-cheek-massamun-curry.jpg",
@@ -51,7 +49,7 @@ const Items = ({ current_products, handleOrder }) => {
                     {
                         current_products && current_products.map(product => (
                             <div className="col ml-2 p-3" >
-                                <div className="bg-warning m-auto p-2 rounded" style={{ height: "300px" }}>
+                                <div className="bg-warning m-auto p-2 rounded" style={{ height: "340px" }}>
                                     <div className="text-center">
                                         <img src={images[Math.floor(Math.random() * 26)]} style={{ width: "95%", height: "150px" }} />
                                     </div>
@@ -60,6 +58,7 @@ const Items = ({ current_products, handleOrder }) => {
                                             <p className="text-white">ID: {product[0]}</p>
                                             <p className="text-white">Price: {product[2].toFixed(2)} $</p>
                                         </div>
+                                        <p className="text-center text-success">The amount of sales: {product[3]}</p>
                                         <p className="text-center text-white" style={{ marginTop: "-15px", height: "40px" }}>{product[1]}</p>
                                         <div className="text-center">
                                             <button className="btn btn-primary" style={{ width: "100px" }} onClick={() => handleOrder(product)}>Buy now</button>
@@ -76,14 +75,10 @@ const Items = ({ current_products, handleOrder }) => {
     }
 }
 
-const Order = () => {
-
-    const [numberPage, setNumPage] = useState(0)
-    const [products, setProducts] = useState([])
-    const [currentProducts, setCurrentProducts] = useState([])
-    const [currentPage, setCurrentPage] = useState(1);
+const BestSeller = () => {
+    const [bestProducts, setBestProducts] = useState([])
     const [loading, setLoading] = useState(true)
-    const num_per_page = 16
+    const [update, setUpdate] = useState(true)
 
     const handleOrder = async (item) => {
         const customer_id = 14031
@@ -103,20 +98,23 @@ const Order = () => {
                 customerId: customer_id
             }
         })
+        
         if (res.data.status == false) {
             alert("Opp! Something went wrong")
         }
         else {
-            console.log(res.data.bestseller)
-            toast.success("Order successfully");
+            if (res.data.bestseller != null) {
+                toast.success("Order successfully");
+                console.log(res.data.bestseller)
+                // bestProducts = res.data.bestseller
+                setBestProducts(res.data.bestseller)
+            }
         }
-    }
+    }   
 
-
-    const getCurrentPage = async () => {
-        const current_index_page = (currentPage - 1) * 16
+    const getBestSeller = async () => {
         setLoading(true)
-        const res = await axios(`http://localhost:8000/api/v1/product_info`, {
+        const res = await axios(`http://localhost:8000/api/v1/bestseller`, {
             method: "get",
             headers: {
                 Accept: "application/json",
@@ -128,53 +126,36 @@ const Order = () => {
             alert("Opp! Something went wrong")
         }
         else {
-            if (res.data.products != null) {
-                const temp_products = res.data.products
-                const num_products = temp_products.length
-                const start = (1 - 1) * num_per_page
-                const end = start + num_per_page
-                setNumPage(Math.floor(num_products / num_per_page))
-                setProducts(temp_products)
-                setCurrentProducts(temp_products.slice(start, end))
+            if (res.data.bestseller != null) {
+                setBestProducts(res.data.bestseller)
                 setLoading(false)
             }
         }
     }
 
     useEffect(() => {
-        getCurrentPage()
+        getBestSeller()
     }, [])
 
     useEffect(() => {
-        const start = (currentPage - 1) * num_per_page
-        const end = start + num_per_page
-        setCurrentProducts(products.slice(start, end))
-    }, [currentPage])
-
+        console.log(bestProducts)
+    }, [bestProducts])
 
     return (
         <>
             {
                 loading ? <>
-                    <p>Loading ... </p>
-                </> : <>
-                    <div className="pb-5 px-3 ">
-                        <ToastContainer limit={1} />
-                        <Items current_products={currentProducts} handleOrder={handleOrder} />
-                        <div className="d-flex justify-content-center mt-2" >
-                            <div style={{ width: "100px" }}>
-                                <ResponsivePagination
-                                    current={currentPage}
-                                    total={numberPage}
-                                    onPageChange={setCurrentPage}
-                                />
-                            </div>
+                    <p>Loading ...</p>
+                </> :
+                    <>
+                        <div className="pb-5 px-3 ">
+                            <ToastContainer limit={1} />
+                            <Items current_products={bestProducts} handleOrder={handleOrder} />
                         </div>
-                    </div></>
+                    </>
             }
         </>
-
-    );
+    )
 }
 
-export default Order
+export default BestSeller

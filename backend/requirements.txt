@@ -3,3 +3,4 @@ redshift_connector
 numpy
 pandas
 Flask
+flask-cors

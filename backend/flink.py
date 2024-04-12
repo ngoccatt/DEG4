@@ -1,4 +1,5 @@
 from pyflink.table import DataTypes
+from datetime import date, datetime
 
 class Flink:
     def __init__(self): 
@@ -133,5 +134,34 @@ class Flink:
 
         except Exception as e:
             print(e)
+            
+    def getToTalProduct(self, cnt):
+        stmt = "SELECT COUNT(id) as total_product FROM product;"
+        total_product = cnt.fetchAll(stmt)
+        return total_product
+        
+    def paginateProduct(self, offset, limit, cnt):
+        stmt = f"SELECT * FROM product LIMIT {limit} OFFSET {offset};"
+        currentProduct = cnt.fetchAll(stmt)
+        return currentProduct
+    
+    def getAllProduct(self, cnt):
+        stmt = f"SELECT * FROM product;"
+        currentProduct = cnt.fetchAll(stmt)
+        return currentProduct
+    
+    def getBestSellerProduct(self, cnt):
+        stmt = f"SELECT  product.id AS ID, MAX(product.description) AS description, MAX(product.unitprice) AS unitprice, COUNT(product.id) AS num_sale FROM orders JOIN belong ON orders.id = belong.orderid JOIN product ON  product.id = belong.productid WHERE orders.cancelled <> true GROUP BY product.id ORDER BY COUNT(product.id) DESC LIMIT 16"
+        currentBestSeller = cnt.fetchAll(stmt)
+        return currentBestSeller
+    
+    def createOrder(self, orderId, customerId, productId, cnt):
+        current_date= datetime.now()
+        current_time = current_date.strftime('%H:%M:%S')
+        cnt.insertData("orders", ["id", "customerid", "cancelled", "invoicedate", "invoicetime"], [orderId, customerId, False, date.today(), current_time])
+        cnt.insertData("belong", ["orderid", "productid", "quantity"], [orderId, productId, 1])
+        currentBestSeller = self.getBestSellerProduct(cnt)
+        return currentBestSeller
+        
             
 flink_tables = Flink()

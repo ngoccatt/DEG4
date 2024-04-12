@@ -16,6 +16,7 @@ class Connector:
             redshift_connector.paramstyle = 'format'
             self.connector = connector
             self.cursor = connector.cursor()
+            print("Connect to RedShift successfully")
         except Exception as e:
             print(e)
             
@@ -24,6 +25,14 @@ class Connector:
             self.cursor.execute(stmt)
             result: pandas.DataFrame = self.cursor.fetch_dataframe()
             
+            return result
+        except Exception as e:
+            print(e)
+            
+    def fetchAll(self, stmt):
+        try:
+            self.cursor.execute(stmt)
+            result: tuple = self.cursor.fetchall()
             return result
         except Exception as e:
             print(e)

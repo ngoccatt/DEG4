@@ -3,7 +3,9 @@ import React from 'react';
 import { Navigation } from 'react-minimal-side-navigation';
 import 'react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css';
 import {BsFillPersonFill} from "react-icons/bs"
-import {AiFillCarryOut} from "react-icons/ai"
+import { BsBagPlus } from "react-icons/bs";
+import { AiFillDollarCircle } from "react-icons/ai";
+import { AiOutlineAreaChart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
@@ -28,12 +30,19 @@ const SideBar = () => {
                         itemId: '/order',
                         // you can use your own custom Icon component as well
                         // icon is optional
-                        elemBefore: () => <BsFillPersonFill size={20} />,
+                        elemBefore: () => <BsBagPlus size={20} />,
+                    },
+                    {
+                        title: 'Best seller',
+                        itemId: '/bestseller',
+                        // you can use your own custom Icon component as well
+                        // icon is optional
+                        elemBefore: () => <AiFillDollarCircle size={20} />,
                     },
                     {
                         title: 'Dashboard',
                         itemId: '/dashboard',
-                        elemBefore: () => <AiFillCarryOut size={20} />,
+                        elemBefore: () => <AiOutlineAreaChart size={20} />,
                     
                     },
             
