@@ -26,7 +26,7 @@ const InfoCard = (props) => {
           fontWeight: 800,
           fontSize: "12px",
           color: "#868E96"
-        }}>PRICE</p>
+        }}>{props.name}</p>
         <IconCoin style={{
           width: "16px",
           height: "16px",
@@ -37,11 +37,11 @@ const InfoCard = (props) => {
         fontWeight: 700,
         fontSize: "20px",
         color: "#000",
-      }}>12,456</p>
+      }}>{props.value}</p>
       <p style={{
         color : "#868e96",
         fontSize: "10px"
-      }}>Increase compared to last month</p>
+      }}>{props.description}</p>
     </div>
   );
 };
