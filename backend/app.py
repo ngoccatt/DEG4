@@ -136,7 +136,6 @@ def orders_cancelled():
     
     result = "Empty"
     df = pd.DataFrame(flink_tables.pdf_cancel_rate)
-    df = df[["total_orders", "cancel_orders"]]
     df["success_orders"] = df["total_orders"] - df["cancel_orders"]
     print(df.head())
     result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
@@ -148,11 +147,8 @@ def orders_cancelled_sum():
     
     result = "Empty"
     df = pd.DataFrame(flink_tables.pdf_cancel_rate)
-    print(df.head())
-    df = df[["total_orders", "cancel_orders"]]
-    print(df.head())
     df["success_orders"] = df["total_orders"] - df["cancel_orders"]
-    df = df.drop(columns = ["total_orders"])
+    df = df.drop(columns = ["total_orders", "country"])
     df = df.iloc[:, 0:].agg(["sum"], axis = 0)
     df = df.T.reset_index(names='name').rename(columns = {"sum":"value"})
     print(df.head())
