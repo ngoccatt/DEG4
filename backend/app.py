@@ -1,7 +1,7 @@
 from pyflink.table import EnvironmentSettings, TableEnvironment
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
+import requests
 from connector import cnt
 from flink import flink_tables
 from json import dumps
@@ -14,8 +14,13 @@ table_env = TableEnvironment.create(env_setting)
 flink_tables.getAnalitics(table_env, cnt)
 
 app = Flask(__name__)
-
 CORS(app)
+
+@app.route("/test")
+def test():
+    records = flink_tables.belong.fetch(5)
+    result =  formatResult(True, records)
+    return result
 
 def formatResult(status, records):
     data = records.values.tolist()

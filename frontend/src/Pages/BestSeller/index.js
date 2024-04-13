@@ -58,8 +58,8 @@ const Items = ({ current_products, handleOrder }) => {
                                             <p className="text-white">ID: {product[0]}</p>
                                             <p className="text-white">Price: {product[2].toFixed(2)} $</p>
                                         </div>
-                                        <p className="text-center text-success">The amount of sales: {product[3]}</p>
-                                        <p className="text-center text-white" style={{ marginTop: "-15px", height: "40px" }}>{product[1]}</p>
+                                        <p className="text-center text-success mt-1 p-1">The amount of sales: {product[3]}</p>
+                                        <p className="text-center text-white mt-1 p-1" style={{ marginTop: "-15px", height: "55px" }}>{product[1]}</p>
                                         <div className="text-center">
                                             <button className="btn btn-primary" style={{ width: "100px" }} onClick={() => handleOrder(product)}>Buy now</button>
                                         </div>
