@@ -6,6 +6,7 @@ class Flink:
         self.update = True
     
     def createTable(self, table_env, cnt):
+        
         try: 
             pdf_belong = cnt.fetchData("select * from belong")
             pdf_orders = cnt.fetchData("select * from orders")
@@ -44,7 +45,7 @@ class Flink:
             
     def getAnalitics(self, table_env, cnt):
         if not self.update:
-            return 
+            return False
         try: 
             self.pdf_revenue = cnt.fetchData(
                                         """
@@ -131,7 +132,7 @@ class Flink:
             
             print("Fetched all table successfully")
             self.update = False
-
+            return True
         except Exception as e:
             print(e)
             
@@ -161,6 +162,7 @@ class Flink:
         cnt.insertData("orders", ["id", "customerid", "cancelled", "invoicedate", "invoicetime"], [orderId, customerId, False, date.today(), current_time])
         cnt.insertData("belong", ["orderid", "productid", "quantity"], [orderId, productId, 1])
         currentBestSeller = self.getBestSellerProduct(cnt)
+        self.update = True
         return currentBestSeller
         
             
