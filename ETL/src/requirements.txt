@@ -2,3 +2,5 @@ apache-flink
 redshift_connector
 numpy
 pandas
+boto3
+botocore

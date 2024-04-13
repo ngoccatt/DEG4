@@ -52,14 +52,14 @@ def upload_df(df: pd.DataFrame, bucket_name, object_name):
 
 # if data is upload directly to S3 from dataframe, the below lines are not necessary
 
-print("Uploading file to S3...")
+# print("Uploading file to S3...")
 
-upload_file(f"/ETL/sink_data/{files[0]}", "sample-bucket-trash")
-upload_file(f"/ETL/sink_data/{files[1]}", "sample-bucket-trash")
-upload_file(f"/ETL/sink_data/{files[2]}", "sample-bucket-trash")
-upload_file(f"/ETL/sink_data/{files[3]}", "sample-bucket-trash")
+# upload_file(f"/ETL/sink_data/{files[0]}", "sample-bucket-trash")
+# upload_file(f"/ETL/sink_data/{files[1]}", "sample-bucket-trash")
+# upload_file(f"/ETL/sink_data/{files[2]}", "sample-bucket-trash")
+# upload_file(f"/ETL/sink_data/{files[3]}", "sample-bucket-trash")
 
-print("Completed uploading file to S3.")
+# print("Completed uploading file to S3.")
 
 # ---------------------------------------------------------------------------------
 
