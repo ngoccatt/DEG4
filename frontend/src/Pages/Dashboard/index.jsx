@@ -125,6 +125,7 @@ const Dashboard = () => {
   
   const [currentCard, setCurrentCard] = useState(null);
 
+  const [updateAnalytics, setUpdateAnalytics] = useState(null);
   const [RevenueCountries, setRevenueCountries] = useState(null);
   const [RevenueMonthly, setRevenueMonthly] = useState(null);
   const [RevenueYearly, setRevenueYearly] = useState(null);
@@ -147,11 +148,13 @@ async function fetchData(func, url) {
       if (response.status == 200) {
         func(data);
         console.log(data);
+        return true;
       }
     }
     catch (error){
       console.log(error);
     }
+    return false;
     
   };
 
@@ -171,22 +174,34 @@ function orderSum(arr) {
   return total
 }
 
+  // useEffect(() => {
+  //   const getAnalytics = async () => {
+      
+  //   };
+  //   getAnalytics();
+  //   }, []);
+
+
   useEffect(() => {
-    fetchData(setRevenueCountries, "http://localhost:8000/revenue/countries")
-    fetchData(setRevenueMonthly, "http://localhost:8000/revenue/monthly")
-    fetchData(setRevenueYearly, "http://localhost:8000/revenue/yearly")
-    fetchData(setOrderCountries, "http://localhost:8000/orders/countries")
-    fetchData(setOrderAvg, "http://localhost:8000/orders/avg")
-    // fetchData(setOrderTimeslot, "http://localhost:8000/revenue/monthly")
-    fetchData(setOrderTimeslotSum, "http://localhost:8000/orders/timeslot_sum")
-    fetchData(setOrderCancelled, "http://localhost:8000/orders/cancelled")
-    fetchData(setOrderCancelledSum, "http://localhost:8000/orders/cancelled_sum")
+    const getMetrics = async () => {
+      await fetchData(setUpdateAnalytics, "http://localhost:8000/updateAnalytics")
+      await fetchData(setRevenueCountries, "http://localhost:8000/revenue/countries")
+      await fetchData(setRevenueMonthly, "http://localhost:8000/revenue/monthly")
+      await fetchData(setRevenueYearly, "http://localhost:8000/revenue/yearly")
+      await fetchData(setOrderCountries, "http://localhost:8000/orders/countries")
+      await fetchData(setOrderAvg, "http://localhost:8000/orders/avg")
+      await fetchData(setOrderTimeslotSum, "http://localhost:8000/orders/timeslot_sum")
+      await fetchData(setOrderCancelled, "http://localhost:8000/orders/cancelled")
+      await fetchData(setOrderCancelledSum, "http://localhost:8000/orders/cancelled_sum")
+    };
+    getMetrics();
   }, []);
 
   // console.log(currentCard);
 
   if (
-    !RevenueCountries || 
+    !updateAnalytics ||
+    !RevenueCountries ||
     !RevenueMonthly ||
     !RevenueYearly ||
     !OrderCountries ||
@@ -196,7 +211,7 @@ function orderSum(arr) {
     !OrderCancelledSum
   ) {
     // Render a loading state
-    return <p>Loading...</p>;
+    return <p>Creating charts...</p>;
   }
 
     return (
