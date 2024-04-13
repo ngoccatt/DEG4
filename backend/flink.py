@@ -42,6 +42,9 @@ class Flink:
         except Exception as e:
             print(e)
             
+    def setUpdate(self, update):
+        self.update = update
+            
     def getAnalitics(self, table_env, cnt):
         if not self.update:
             return 
@@ -161,6 +164,7 @@ class Flink:
         cnt.insertData("orders", ["id", "customerid", "cancelled", "invoicedate", "invoicetime"], [orderId, customerId, False, date.today(), current_time])
         cnt.insertData("belong", ["orderid", "productid", "quantity"], [orderId, productId, 1])
         currentBestSeller = self.getBestSellerProduct(cnt)
+        self.setUpdate(True)
         return currentBestSeller
         
             
