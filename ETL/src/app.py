@@ -74,7 +74,6 @@ products_pandas = products.to_pandas()
 products_pandas = products_pandas[products_pandas.ID != 'StockCode']
 customers_pandas = customers.to_pandas()
 customers_pandas = customers_pandas[customers_pandas.ID != 'CustomerID']
-# customers_pandas.drop(customers_pandas.tail(1).index,inplace=True)
 orders_pandas = orders.to_pandas()
 orders_pandas = orders_pandas[orders_pandas.ID != 'InvoiceNo']
 belongs_pandas = belongs.to_pandas()
