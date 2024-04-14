@@ -2,3 +2,4 @@
 /frontend/node_modules
 frontend/package-lock.json
 frontend/package-lock.json
+ETL/src/.env

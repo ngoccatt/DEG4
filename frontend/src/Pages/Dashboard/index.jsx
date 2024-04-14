@@ -139,6 +139,7 @@ const Dashboard = () => {
 
 async function fetchData(func, url) {
     // Request to get all cards from user
+    func(null)
     try {
       let response = await fetch(url, {
       method: "GET",
@@ -152,6 +153,8 @@ async function fetchData(func, url) {
       }
     }
     catch (error){
+      data = {"status": false}
+      func(data)
       console.log(error);
     }
     return false;
@@ -163,7 +166,7 @@ function revenueSum(arr) {
   for (const item of arr) {
     total += item.revenue
   }
-  return total
+  return total.toFixed(2)
 }
 
 function orderSum(arr) {
@@ -173,13 +176,6 @@ function orderSum(arr) {
   }
   return total
 }
-
-  // useEffect(() => {
-  //   const getAnalytics = async () => {
-      
-  //   };
-  //   getAnalytics();
-  //   }, []);
 
 
   useEffect(() => {
@@ -200,15 +196,15 @@ function orderSum(arr) {
   // console.log(currentCard);
 
   if (
-    !updateAnalytics ||
-    !RevenueCountries ||
-    !RevenueMonthly ||
-    !RevenueYearly ||
-    !OrderCountries ||
-    !OrderAvg ||
-    !OrderTimeslotSum ||
-    !OrderCancelled ||
-    !OrderCancelledSum
+    updateAnalytics == null ||
+    RevenueCountries == null ||
+    RevenueMonthly == null ||
+    RevenueYearly == null ||
+    OrderCountries == null ||
+    OrderAvg == null ||
+    OrderTimeslotSum == null ||
+    OrderCancelled == null ||
+    OrderCancelledSum == null
   ) {
     // Render a loading state
     return <p>Creating charts...</p>;
@@ -237,9 +233,10 @@ function orderSum(arr) {
         </Row>
 
 
+
 {/* country */}
         <h1>Revenue of countries</h1>
-        <BarChart
+        {RevenueCountries.status ? <BarChart
           width={500}
           height={300}
           data={RevenueCountries.data}
@@ -249,6 +246,7 @@ function orderSum(arr) {
             left: 20,
             bottom: 5,
           }}
+
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="country" />
@@ -257,12 +255,12 @@ function orderSum(arr) {
           <Legend />
           <Brush dataKey="name" height={30} stroke="#8884d8"  endIndex={5}/>
           <Bar dataKey="revenue" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-        </BarChart>
+        </BarChart> : <p>Failed to fetch data. Please reload the page</p>}
 
 
 {/* Yearly */}
 <h1>Revenue yearly</h1>
-        <BarChart
+        {RevenueYearly.status ? <BarChart
           width={500}
           height={300}
           data={RevenueYearly.data}
@@ -280,11 +278,11 @@ function orderSum(arr) {
           <Legend />
           <Brush dataKey="name" height={30} stroke="#8884d8" />
           <Bar dataKey="revenue" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-        </BarChart>
+        </BarChart> : <p>Failed to fetch data. Please reload the page</p>}
 
 {/* montly */}
 <h1>Revenue monthly</h1>
-        <LineChart
+{RevenueMonthly.status ? <LineChart
           width={500}
           height={300}
           data={RevenueMonthly.data}
@@ -303,11 +301,11 @@ function orderSum(arr) {
           <Legend />
           <Brush dataKey="time" height={30} stroke="#8884d8" />
           <Line dataKey="revenue" fill="#8884d8" />
-        </LineChart>
+        </LineChart>  : <p>Failed to fetch data. Please reload the page</p>}
 
         {/* Yearly */}
 <h1>Top number of orders in each country</h1>
-        <BarChart
+{OrderCountries.status ? <BarChart
           width={500}
           height={300}
           data={OrderCountries.data}
@@ -325,11 +323,11 @@ function orderSum(arr) {
           <Legend />
           <Brush dataKey="country" height={30} stroke="#8884d8" endIndex={5}/>
           <Bar dataKey="num_orders" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-        </BarChart>
+        </BarChart> : <p>Failed to fetch data. Please reload the page</p>}
 
         {/* Yearly */}
         <h1>Top average value of order and number of order in each country</h1>
-        <BarChart
+        {OrderAvg.status ? <BarChart
           width={500}
           height={300}
           data={OrderAvg.data}
@@ -348,12 +346,12 @@ function orderSum(arr) {
           <Brush dataKey="country" height={30} stroke="#8884d8" endIndex={5}/>
           <Bar dataKey="avg" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
           <Bar dataKey="num_orders" fill="green" activeBar={<Rectangle fill="white" stroke="blue" />} />
-        </BarChart>
+        </BarChart> : <p>Failed to fetch data. Please reload the page</p>}
 
 
         <h1>The number of orders in each time slot per day</h1>
         
-        <BarChart
+        {OrderTimeslotSum.status ? <BarChart
           width={500}
           height={300}
           data={OrderTimeslotSum.data}
@@ -371,10 +369,10 @@ function orderSum(arr) {
           <Legend />
           <Brush dataKey="timeslot" height={30} stroke="#8884d8"/>
           <Bar dataKey="num_orders" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-        </BarChart>
+        </BarChart> : <p>Failed to fetch data. Please reload the page</p>}
 
         <h1>Cancelled orders vs successed orders in each country</h1>
-        <BarChart
+        {OrderCancelled.status ? <BarChart
           width={500}
           height={300}
           data={OrderCancelled.data}
@@ -393,11 +391,11 @@ function orderSum(arr) {
           <Brush dataKey="country" height={30} stroke="#8884d8" endIndex={5}/>
           <Bar dataKey="success_orders" fill="#8884d8" stackId={1} activeBar={<Rectangle fill="pink" stroke="blue" />} />
           <Bar dataKey="cancel_orders" fill="#82ca9d" stackId={1} activeBar={<Rectangle fill="white" stroke="white" />} />
-        </BarChart>
+        </BarChart> : <p>Failed to fetch data. Please reload the page</p>}
 
 
         <h1>Total cancelled orders vs succeed orders</h1>
-        <PieChart width={400} height={400}>
+        {OrderCancelledSum.status ? <PieChart width={400} height={400}>
           <Pie
             data={OrderCancelledSum.data}
             cx="50%"
@@ -414,7 +412,7 @@ function orderSum(arr) {
             ))}
           </Pie>
           <Tooltip />
-        </PieChart>
+        </PieChart> : <p>Failed to fetch data. Please reload the page</p>}
 
       </ResponsiveContainer>
 
