@@ -139,6 +139,7 @@ const Dashboard = () => {
 
 async function fetchData(func, url) {
     // Request to get all cards from user
+    func(null)
     try {
       let response = await fetch(url, {
       method: "GET",
@@ -174,13 +175,6 @@ function orderSum(arr) {
   return total
 }
 
-  // useEffect(() => {
-  //   const getAnalytics = async () => {
-      
-  //   };
-  //   getAnalytics();
-  //   }, []);
-
 
   useEffect(() => {
     const getMetrics = async () => {
@@ -200,15 +194,15 @@ function orderSum(arr) {
   // console.log(currentCard);
 
   if (
-    !updateAnalytics ||
-    !RevenueCountries ||
-    !RevenueMonthly ||
-    !RevenueYearly ||
-    !OrderCountries ||
-    !OrderAvg ||
-    !OrderTimeslotSum ||
-    !OrderCancelled ||
-    !OrderCancelledSum
+    updateAnalytics == null ||
+    !RevenueCountries  == null ||
+    !RevenueMonthly == null ||
+    !RevenueYearly == null ||
+    !OrderCountries == null ||
+    !OrderAvg == null ||
+    !OrderTimeslotSum == null ||
+    !OrderCancelled == null ||
+    !OrderCancelledSum== null 
   ) {
     // Render a loading state
     return <p>Creating charts...</p>;

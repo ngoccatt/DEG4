@@ -49,33 +49,40 @@ def revenue_report():
     
     result = "Empty"
     df = pd.DataFrame(flink_tables.pdf_revenue)
+    print(df.head())
     df = df.groupby("country", as_index=False)[["revenue"]].sum()
     df = df.sort_values(by=("revenue"), ascending=False)
-    print(df.head())
+    # print(df.head())
     result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
     return result
 
 #doanh thu theo tung thang
 @app.route("/revenue/monthly")
 def revenue_monthly():
-    
-    result = "Empty"
-    df = pd.DataFrame(flink_tables.pdf_revenue)
-    df["time"] = df["year"].astype("str") + '-' + df["month"].astype("str")
-    df = df.groupby("time", as_index=False, sort=False)[["revenue"]].sum()
-    print(df.head())
-    result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
+    try:
+        result = "Empty"
+        df = pd.DataFrame(flink_tables.pdf_revenue)
+        df["time"] = df["year"].astype("str") + '-' + df["month"].astype("str")
+        df = df.groupby("time", as_index=False, sort=False)[["revenue"]].sum()
+        # print(df.head())
+        result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
+    except Exception as e:
+        print(e)
+        return None
     return result
 
 #doanh thu theo tung nam
 @app.route("/revenue/yearly")
 def revenue_yearly():
-    
-    result = "Empty"
-    df = pd.DataFrame(flink_tables.pdf_revenue)
-    df = df.groupby("year", as_index=False, sort=False)[["revenue"]].sum()
-    print(df.head())
-    result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
+    try:
+        result = "Empty"
+        df = pd.DataFrame(flink_tables.pdf_revenue)
+        df = df.groupby("year", as_index=False, sort=False)[["revenue"]].sum()
+        # print(df.head())
+        result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
+    except Exception as e:
+        print(e)
+        return None
     return result
 
 #so don hang theo tung quoc gia
@@ -87,7 +94,7 @@ def orders_coun():
     print(df.head())
     df = df.groupby("country", as_index=False, sort=False)[["num_orders"]].sum()
     df = df.sort_values(by=["num_orders"], ascending = False)
-    print(df.head())
+    # print(df.head())
     result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
     return result
 
@@ -102,7 +109,7 @@ def orders_avg():
         ].groupby("country", as_index=False, sort=False)[["num_orders", "total_revenue"]].sum()
     df["avg"] = df["total_revenue"] / df["num_orders"]
     df = df.sort_values(by=["avg"], ascending = False)
-    print(df.head())
+    # print(df.head())
     result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
     return result
 
@@ -123,10 +130,11 @@ def orders_timeslot_sum():
     
     result = "Empty"
     df = pd.DataFrame(flink_tables.pdf_order_timeslot)
+    print(df.head())
     df = df.iloc[:, 1:]
     df = df.agg(["sum"], axis = 0)
     df = df.T.reset_index(names='timeslot').rename(columns = {"sum":"num_orders"})
-    print(df.head())
+    # print(df.head())
     result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
     return result
 
@@ -136,8 +144,9 @@ def orders_cancelled():
     
     result = "Empty"
     df = pd.DataFrame(flink_tables.pdf_cancel_rate)
-    df["success_orders"] = df["total_orders"] - df["cancel_orders"]
     print(df.head())
+    df["success_orders"] = df["total_orders"] - df["cancel_orders"]
+    # print(df.head())
     result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
     return result
 
@@ -151,7 +160,7 @@ def orders_cancelled_sum():
     df = df.drop(columns = ["total_orders", "country"])
     df = df.iloc[:, 0:].agg(["sum"], axis = 0)
     df = df.T.reset_index(names='name').rename(columns = {"sum":"value"})
-    print(df.head())
+    # print(df.head())
     result = {"status": True, "header": df.columns.tolist(), "data": df.to_dict(orient='records')}
     return result
 

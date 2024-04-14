@@ -24,6 +24,10 @@ class Connector:
         try:
             self.cursor.execute(stmt)
             result: pandas.DataFrame = self.cursor.fetch_dataframe()
+            while (len(result) < 1):
+                self.cursor.execute(stmt)
+                result: pandas.DataFrame = self.cursor.fetch_dataframe()
+            
             
             return result
         except Exception as e:
