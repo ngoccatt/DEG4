@@ -139,7 +139,6 @@ const Dashboard = () => {
 
 async function fetchData(func, url) {
     // Request to get all cards from user
-    func(null)
     try {
       let response = await fetch(url, {
       method: "GET",
@@ -194,15 +193,15 @@ function orderSum(arr) {
   // console.log(currentCard);
 
   if (
-    updateAnalytics == null ||
-    !RevenueCountries  == null ||
-    !RevenueMonthly == null ||
-    !RevenueYearly == null ||
-    !OrderCountries == null ||
-    !OrderAvg == null ||
-    !OrderTimeslotSum == null ||
-    !OrderCancelled == null ||
-    !OrderCancelledSum== null 
+    !updateAnalytics ||
+    !RevenueCountries ||
+    !RevenueMonthly ||
+    !RevenueYearly ||
+    !OrderCountries ||
+    !OrderAvg ||
+    !OrderTimeslotSum ||
+    !OrderCancelled ||
+    !OrderCancelledSum
   ) {
     // Render a loading state
     return <p>Creating charts...</p>;
@@ -228,7 +227,52 @@ function orderSum(arr) {
           }}>
             <InfoCard name={"Total Orders"} value={orderSum(OrderCountries.data)} description={"Number of order accumulated"}/>
           </Col>
+          <Col style={{
+            marginRight:"20px",
+            marginBottom: "10px"
+          }}>
+            <InfoCard name={"PRICE"} value={1992} description={"went up"}/>
+          </Col>
         </Row>
+
+        <h1>Pie chart</h1>
+        <PieChart width={400} height={400}>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={100}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+        </PieChart>
+        <LineChart
+          width={500}
+          height={300}
+          data={data2}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          
+          <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+        </LineChart>
+
 
 
 {/* country */}
