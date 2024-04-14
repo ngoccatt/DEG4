@@ -4,6 +4,12 @@ import boto3
 from botocore.exceptions import ClientError
 import os
 import pandas as pd
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
+aws_access_key_id_ =  os.environ.get("aws_access_key_id")
+aws_secret_access_key_ =  os.environ.get("aws_secret_access_key")
 
 class Connector:
     def __init__(self):
@@ -168,8 +174,8 @@ class Connector:
         
     def upload_df(self, df: pd.DataFrame, bucket_name, object_name):
 
-        s3_client = boto3.client('s3',aws_access_key_id = "AKIA6ODU3JISZYOLPMEY",
-                                aws_secret_access_key = "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")
+        s3_client = boto3.client('s3',aws_access_key_id = aws_access_key_id_,
+                                aws_secret_access_key = aws_secret_access_key_)
         try:
             response = s3_client.put_object(Bucket = bucket_name,
                                             Body = bytes(df.to_csv(index=False), 'utf-8'), 
