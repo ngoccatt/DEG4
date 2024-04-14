@@ -132,9 +132,17 @@ class Flink:
                         total_orders DESC, country ;
                                         """
                                         )
-            
-            print("Fetched all table successfully")
-            self.update = False
+            if (
+                self.pdf_revenue.empty or
+                self.pdf_avg_revenue.empty or
+                self.pdf_order_timeslot.empty or
+                self.pdf_cancel_rate.empty
+            ):
+                print("Failed to fetch all table. Please refresh the page")
+                self.update = True
+            else:
+                print("Fetched all table successfully")
+                self.update = False
             return True
         except Exception as e:
             print(e)

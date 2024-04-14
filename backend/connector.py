@@ -26,12 +26,13 @@ class Connector:
             result: pandas.DataFrame = self.cursor.fetch_dataframe()
             while (len(result) < 1):
                 self.cursor.execute(stmt)
-                result: pandas.DataFrame = self.cursor.fetch_dataframe()
+                result = self.cursor.fetch_dataframe()
             
             
             return result
         except Exception as e:
-            print(e)
+            print(f'Exception while fetching data: {e}')
+            return pandas.DataFrame()
             
     def fetchAll(self, stmt):
         try:
